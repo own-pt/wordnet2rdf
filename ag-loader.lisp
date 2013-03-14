@@ -41,16 +41,37 @@
 
 (defun add-wordsenses (ss ss-res wordsenses)
   (dotimes (i (length wordsenses))
-    (add-wordsense ss ss-res i (nth i wordsenses))))
+    (add-wordsense ss ss-res (1+ i) (nth i wordsenses))))
 
 
-(defun add-pointer (ss ss-res p-num p)
-  t)
+(defun get-property (ss-type p)
+  (let ((pvalue (cadr (assoc (nth 0 p) *ptrs-table* :test #'string=)))
+	(pair-type (concatenate 'string ss-type (nth 2 p))))
+    (if (listp pvalue)
+	(cadar (remove-if-not (lambda (x) (member pair-type (car x) :test #'string=)) pvalue))
+	pvalue)))
+
+
+(defun add-pointer (ss ss-res p)
+  (let ((snum (nth 3 p))
+	(tnum (nth 4 p))
+	(property (get-property (synset-type ss) p)))
+    (if property 
+	(if (= 0 (+ snum tnum))
+	    (add-triple ss-res property (make-synset-uri (nth 1 p) (nth 2 p)))
+	    (let ((source (wordsense-uri (synset-id ss) (synset-type ss) snum))
+		  (target (wordsense-uri (nth 1 p) (nth 2 p) tnum)))
+	      (add-triple source property target)))
+	(error "I don't know this property."))))
 
 
 (defun add-pointers (ss ss-res pointers)
-  (dotimes (i (length pointers))
-    (add-pointer ss ss-res p-num p)))
+  (dolist (p pointers)
+    (add-pointer ss ss-res p)))
+
+
+(defun add-frames (ss)
+  t)
 
 
 (defun add-synset (synset)
@@ -59,6 +80,7 @@
     (add-triple ss-uri !wn20:synsetId (literal (format nil "~a" (synset-id synset))))
     (add-triple ss-uri !wn20:gloss (literal (synset-gloss synset)))
     ; (add-triple ss-uri !wn20:tagCount (literal (format nil "~a" tag-count)))
+    (add-frames synset)
     (add-wordsenses synset ss-uri (synset-words synset))
-    (add-pointers (synset-id synset) ss-uri (synset-pointers synset))))
+    (add-pointers synset ss-uri (synset-pointers synset))))
 

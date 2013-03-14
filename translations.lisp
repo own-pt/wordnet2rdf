@@ -29,11 +29,12 @@
 			     ("+"  !wn30:derivationallyRelated)
 			     (">"  !wn30:causes)
 			     ("$"  !wn30:sameVerbGroupAs)
-			     ("="  !wn30:attribute)
+			     ("="  ((("na" "ns" "an" "sn") !wn30:attribute)))
 			     ("!"  !wn30:antonymOf)
 			     ("^"  !wn30:seeAlso)
 			     (">"  !wn30:participleOf)
-			     ("\\" (("as" !wn30:adjectivePertainsTo) ("r" !wn30:adverbPertainsTo)))))
+			     ("\\" ((("an" "aa" "as" "sn" "sa" "ss") !wn30:adjectivePertainsTo) 
+				    (("ra" "rs") !wn30:adverbPertainsTo)))))
 
 
 ;; remember that frames are ordered from 1-35
@@ -73,4 +74,3 @@
 			     "Somebody ----s VERB-ing"
 			     "It ----s that CLAUSE"
 			     "Something ----s INFINITIVE"))
-
