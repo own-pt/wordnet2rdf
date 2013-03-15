@@ -10,6 +10,3 @@
 (register-namespace "wn20" "http://www.w3.org/2006/03/wn/wn20/schema/" :errorp nil)
 
 (create-triple-store "wn30")
-
-
-

@@ -12,11 +12,6 @@
     (push (subseq data pos (+ pos size)) res)))
 
 
-(defun parse-index-line (line)
-  "It reads a line from index.{noun,verb,adv,adj} WordNet database file."
-  (let* ((data (cl-ppcre:split " " line)))
-    data))
-
 (defun parse-word (word)
   (let ((hexval (nth 1 word))) 
     (setf (nth 1 word) (parse-integer hexval :radix 16))
@@ -34,7 +29,7 @@
 
 (defun parse-data-line (line)
   "It reads a line from data.{noun,verb,adv,adj} wordnet database file
-   and returns a synsets as a list."
+   and returns a synset instance."
   (let* ((gloss-sep (position #\| line))
 	 (data (cl-ppcre:split " " (subseq line 0 gloss-sep)))
 	 (gloss (subseq line (+ 1 gloss-sep)))
@@ -53,8 +48,7 @@
 		   :pointers (mapcar #'parse-pointer (collect data (+ p-cnt-pos 1) 4 p-cnt))
 		   :frames (mapcar #'parse-frame (collect data (+ 1 fields) 3 f-cnt)))))
 
-
-(defun parse-data-file (filename &optional (limit nil))
+(defun parse-file (filename parser &optional (limit nil))
   "It reads a file data.{noun,verb,adj,adv} wordnet database."
   (with-open-file (f filename)
     (do* ((line (read-line f nil)
@@ -69,9 +63,14 @@
 	      (and limit (> counter limit)))
 	  (reverse res))
       (if parser? 
-	  (let ((data (parse-data-line line)))
+	  (let ((data (funcall parser line)))
 	    (if data (push data res)))))))
 
+
+(defun parse-index-line (line)
+  "It reads a line from index.{noun,verb,adv,adj} WordNet database file."
+  (let* ((data (cl-ppcre:split " " line)))
+    data))
 
 (defun parse-sents-file (path)
   (labels ((parse-line (line)
