@@ -71,3 +71,21 @@
       (if parser? 
 	  (let ((data (parse-data-line line)))
 	    (if data (push data res)))))))
+
+
+(defun parse-sents-file (path)
+  (labels ((parse-line (line)
+	     (multiple-value-bind (s a) 
+		 (scan-to-strings "([0-9]+)[ ]+(.*)" line)
+	       (declare (ignore s)) 
+	       (list (parse-integer (aref a 0)) 
+		     (aref a 1)))))
+      (with-open-file (fin path :direction :input)
+	(loop for line = (read-line fin nil)
+	      while line
+	      collect (parse-line line)))))
+
+
+(defparameter *sents* (parse-sents-file #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/sents.vrb") 
+  "parsing and loading the verb example sentences")
+

@@ -70,8 +70,17 @@
     (add-pointer ss ss-res p)))
 
 
-(defun add-frames (ss)
-  t)
+(defun add-frame (ss ss-res frame)
+  (let ((sentence (literal (nth (1- (nth 0 frame)) *frames*)))) 
+    (if (= 0 (nth 1 frame))
+	(add-triple ss-res !wn20:frame sentence)
+	(let ((source (wordsense-uri (synset-id ss) (synset-type ss) (nth 1 frame))))
+	  (add-triple source !wn20:frame sentence)))))
+
+
+(defun add-frames (ss ss-res frames)
+  (dolist (f frames)
+    (add-frame ss ss-res f)))
 
 
 (defun add-synset (synset)
@@ -80,7 +89,7 @@
     (add-triple ss-uri !wn20:synsetId (literal (format nil "~a" (synset-id synset))))
     (add-triple ss-uri !wn20:gloss (literal (synset-gloss synset)))
     ; (add-triple ss-uri !wn20:tagCount (literal (format nil "~a" tag-count)))
-    (add-frames synset)
+    (add-frames synset ss-uri (synset-frames synset))
     (add-wordsenses synset ss-uri (synset-words synset))
     (add-pointers synset ss-uri (synset-pointers synset))))
 
