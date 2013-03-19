@@ -20,3 +20,19 @@
 		:initform nil
 		:reader synset-frames)))
 
+
+(defclass senseidx ()
+  ((key         :initarg :key
+		:reader senseidx-key)
+   (lemma       :initarg :lemma
+		:reader senseidx-lema)
+   (ss-type     :initarg :ss-type
+		:reader senseidx-ss-type)
+   (lexfile     :initarg :lexfile
+		:reader senseidx-lexfile)
+   (synset      :initarg :synset
+		:reader senseidx-synset)
+   (number      :initarg :number
+		:reader senseidx-number)
+   (tagcnt      :initarg :tagcnt
+		:reader senseidx-tagcnt)))

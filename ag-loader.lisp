@@ -29,8 +29,8 @@
 	(word (literal (nth 0 ws))))
     (add-triple ws-uri !rdf:type !wn20:WordSense)
     (add-triple ws-uri !rdfs:label word)
-    ; what is a sense number?
-    (add-triple ws-uri !wn20:senseNumber (literal (write-to-string ws-num)))
+    ; word number is different from sense number
+    (add-triple ws-uri !wn20:wordNumber (literal (write-to-string ws-num)))
     (add-triple ss-res !wn20:containsWordSense ws-uri)
     ; add RDF list too
     (with-blank-nodes (w)
@@ -84,12 +84,30 @@
 
 
 (defun add-synset (synset)
-  (let ((ss-uri (synset-uri synset)))
+  (let ((ss-uri (synset-uri synset))
+	(lexname (cadr (assoc (synset-lnum synset) *lexnames*))))
     (add-triple ss-uri !rdf:type (synset-class synset))
     (add-triple ss-uri !wn20:synsetId (literal (format nil "~a" (synset-id synset))))
     (add-triple ss-uri !wn20:gloss (literal (synset-gloss synset)))
+    (add-triple ss-uri !wn20:lexicographerFile (literal lexname))
     ; (add-triple ss-uri !wn20:tagCount (literal (format nil "~a" tag-count)))
     (add-frames synset ss-uri (synset-frames synset))
     (add-wordsenses synset ss-uri (synset-words synset))
     (add-pointers synset ss-uri (synset-pointers synset))))
+
+
+;; (:key "170th%5:00:00:ordinal:00" :lemma "170th" :ss-type "5"
+;;  :lexfilenum 0 :synset "02211436" :sense-number 1 :tag-count 0)
+
+(defun add-senseidx (senseidx)
+  (let ((ss-uri (make-synset-uri (getf senseidx :synset) 
+				 (cadr (assoc (getf senseidx :ss-type) *type-table-inv*)))))
+    (with-blank-nodes (w)
+      (add-triple w !rdf:type !wn20:SenseIndex)
+      (add-triple w !wn20:senseKey    (literal (getf senseidx :key)))
+      (add-triple w !wn20:lemma       (literal (getf senseidx :lemma)))
+      (add-triple w !wn20:senseNumber (literal (getf senseidx :sense-number)))
+      (add-triple w !wn20:tagCount    (literal (getf senseidx :tag-count)))
+      (add-triple ss-uri !wn20:containsSenseIndex w))))
+
 

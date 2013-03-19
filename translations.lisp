@@ -4,8 +4,11 @@
 (defparameter *type-table* `(("n" 1 !wn30:NounSynset)
 			     ("v" 2 !wn30:VerbSynset)
 			     ("a" 3 !wn30:AdjectiveSynset)
-			     ("s" 3 !wn30:AdjectiveSatelliteSynset)
+			     ("s" 5 !wn30:AdjectiveSatelliteSynset)
 			     ("r" 4 !wn30:AdverbSynset)))
+
+(defparameter *type-table-inv* (mapcar (lambda (x) (list (nth 1 x) (nth 0 x) (nth 2 x))) 
+				       *type-table*))
 
 
 (defparameter *ptrs-table* `(("@"  !wn30:hypernymOf) 
@@ -75,4 +78,5 @@
 			 "Somebody ----s VERB-ing"
 			 "It ----s that CLAUSE"
 			 "Something ----s INFINITIVE"))
+
 

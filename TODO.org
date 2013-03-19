@@ -1,0 +1,13 @@
+
+* Pending
+
+** TODO verb sentences examples
+** TODO tagCount 
+** TODO Identify what to extract from index.XXXX files.
+** DONE adj and adv synsets (sattelities)
+
+Looks like the relations between synsets encode this data.
+
+** DONE lexnames
+
+

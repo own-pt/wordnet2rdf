@@ -41,15 +41,16 @@
 		    (parse-integer (nth fields data)) 0)))
     (make-instance 'synset 
 		   :id (nth 0 data)
-		   :lex-filenum (nth 1 data)
+		   :lex-filenum (parse-integer (nth 1 data))
 		   :ss-type (nth 2 data)
 		   :gloss (string-trim '(#\Space) gloss)
 		   :words (mapcar #'parse-word (collect data 4 2 w-cnt))
 		   :pointers (mapcar #'parse-pointer (collect data (+ p-cnt-pos 1) 4 p-cnt))
 		   :frames (mapcar #'parse-frame (collect data (+ 1 fields) 3 f-cnt)))))
 
+
 (defun parse-file (filename parser &optional (limit nil))
-  "It reads a file data.{noun,verb,adj,adv} wordnet database."
+  "It reads a file {index,data}.{noun,verb,adj,adv} wordnet database."
   (with-open-file (f filename)
     (do* ((line (read-line f nil)
 		(read-line f nil))
@@ -67,24 +68,50 @@
 	    (if data (push data res)))))))
 
 
-(defun parse-index-line (line)
-  "It reads a line from index.{noun,verb,adv,adj} WordNet database file."
-  (let* ((data (cl-ppcre:split " " line)))
-    data))
-
-(defun parse-sents-file (path)
-  (labels ((parse-line (line)
-	     (multiple-value-bind (s a) 
-		 (scan-to-strings "([0-9]+)[ ]+(.*)" line)
-	       (declare (ignore s)) 
-	       (list (parse-integer (aref a 0)) 
-		     (aref a 1)))))
-      (with-open-file (fin path :direction :input)
-	(loop for line = (read-line fin nil)
-	      while line
-	      collect (parse-line line)))))
+(defun parse-senseidx-line (line)
+  (let* ((data (cl-ppcre:split " " line))
+	 (key (nth 0 data))
+	 (keyparts (cl-ppcre:split "%" key))
+	 (lemma (car keyparts))
+	 (keyrest (cl-ppcre:split ":" (cadr keyparts)))
+	 (ss-type (nth 0 keyrest))
+	 (lexfile (nth 1 keyrest)))
+    (list :key key :lemma lemma 
+	  :ss-type (parse-integer ss-type) 
+	  :lexfilenum (parse-integer lexfile) 
+	  :synset (nth 1 data) 
+	  :sense-number (nth 2 data) 
+	  :tag-count (nth 3 data))))
 
 
-(defparameter *sents* (parse-sents-file #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/sents.vrb") 
+
+;; parsing auxiliar files
+
+(defun parse-aux-file (parser path)
+  (with-open-file (fin path :direction :input)
+    (loop for line = (read-line fin nil)
+	  while line
+	  collect (funcall parser line))))
+
+(defun parser-sents (line)
+  (multiple-value-bind (s a) 
+      (scan-to-strings "([0-9]+)[ ]+(.*)" line)
+    (declare (ignore s)) 
+    (list (parse-integer (aref a 0)) 
+	  (aref a 1))))
+
+(defun parser-lexnames (line)
+  (multiple-value-bind (m g) 
+      (scan-to-strings "([0-9]+)[ \\t]+([a-zA-Z\\.]*)[ \\t]+([0-9]*)" line)
+    (declare (ignore m)) 
+    (list (parse-integer (aref g 0)) 
+	  (aref g 1)
+	  (parse-integer (aref g 2)))))
+
+
+(defparameter *sents* (parse-aux-file #'parser-sents #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/sents.vrb") 
   "parsing and loading the verb example sentences")
+
+(defparameter *lexnames* (parse-aux-file #'parser-lexnames #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/lexnames") 
+  "parsing and loading the lexname file")
 
