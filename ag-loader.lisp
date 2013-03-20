@@ -29,12 +29,14 @@
 	(word (literal (nth 0 ws))))
     (add-triple ws-uri !rdf:type !wn20:WordSense)
     (add-triple ws-uri !rdfs:label word)
+    (add-triple ws-uri !wn20:lexicalId (literal (write-to-string (nth 1 ws))))
     ; word number is different from sense number
     (add-triple ws-uri !wn20:wordNumber (literal (write-to-string ws-num)))
     (add-triple ss-res !wn20:containsWordSense ws-uri)
     ; add RDF list too
     (with-blank-nodes (w)
       (add-triple w !rdf:type !wn20:Word)
+      (add-triple w !wn20:lemma (literal (string-downcase (nth 0 ws))))
       (add-triple w !wn20:lexicalForm word)
       (add-triple ws-uri !wn20:word w))))
 
@@ -87,10 +89,9 @@
   (let ((ss-uri (synset-uri synset))
 	(lexname (cadr (assoc (synset-lnum synset) *lexnames*))))
     (add-triple ss-uri !rdf:type (synset-class synset))
-    (add-triple ss-uri !wn20:synsetId (literal (format nil "~a" (synset-id synset))))
+    (add-triple ss-uri !wn20:synsetId (literal (synset-id synset)))
     (add-triple ss-uri !wn20:gloss (literal (synset-gloss synset)))
     (add-triple ss-uri !wn20:lexicographerFile (literal lexname))
-    ; (add-triple ss-uri !wn20:tagCount (literal (format nil "~a" tag-count)))
     (add-frames synset ss-uri (synset-frames synset))
     (add-wordsenses synset ss-uri (synset-words synset))
     (add-pointers synset ss-uri (synset-pointers synset))))
@@ -109,5 +110,3 @@
       (add-triple w !wn20:senseNumber (literal (getf senseidx :sense-number)))
       (add-triple w !wn20:tagCount    (literal (getf senseidx :tag-count)))
       (add-triple ss-uri !wn20:containsSenseIndex w))))
-
-

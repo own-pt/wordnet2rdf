@@ -3,6 +3,7 @@
 
 ** TODO verb sentences examples
 ** TODO tagCount 
+** TODO parsing adj marks
 ** TODO Identify what to extract from index.XXXX files.
 ** DONE adj and adv synsets (sattelities)
 

@@ -68,7 +68,9 @@
 	    (if data (push data res)))))))
 
 
-(defun parse-senseidx-line (line)
+;; parser for each kind of file
+
+(defun parser-senseidx (line)
   (let* ((data (cl-ppcre:split " " line))
 	 (key (nth 0 data))
 	 (keyparts (cl-ppcre:split "%" key))
@@ -84,21 +86,13 @@
 	  :tag-count (nth 3 data))))
 
 
-
-;; parsing auxiliar files
-
-(defun parse-aux-file (parser path)
-  (with-open-file (fin path :direction :input)
-    (loop for line = (read-line fin nil)
-	  while line
-	  collect (funcall parser line))))
-
 (defun parser-sents (line)
   (multiple-value-bind (s a) 
       (scan-to-strings "([0-9]+)[ ]+(.*)" line)
     (declare (ignore s)) 
     (list (parse-integer (aref a 0)) 
 	  (aref a 1))))
+
 
 (defun parser-lexnames (line)
   (multiple-value-bind (m g) 
@@ -109,9 +103,9 @@
 	  (parse-integer (aref g 2)))))
 
 
-(defparameter *sents* (parse-aux-file #'parser-sents #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/sents.vrb") 
+(defparameter *sents* (parse-file #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/sents.vrb" #'parser-sents) 
   "parsing and loading the verb example sentences")
 
-(defparameter *lexnames* (parse-aux-file #'parser-lexnames #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/lexnames") 
+(defparameter *lexnames* (parse-file #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/lexnames" #'parser-lexnames)  
   "parsing and loading the lexname file")
 
