@@ -79,4 +79,3 @@
 			 "It ----s that CLAUSE"
 			 "Something ----s INFINITIVE"))
 
-

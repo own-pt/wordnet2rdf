@@ -1,4 +1,5 @@
 ;; (C) 2013 IBM Corporation
+;;
 ;;  Author: Alexandre Rademaker
 ;; Project: Wordnet-BR
 ;;
@@ -66,7 +67,7 @@
 	    (let ((source (wordsense-uri (synset-id ss) (synset-type ss) snum))
 		  (target (wordsense-uri (nth 1 p) (nth 2 p) tnum)))
 	      (add-triple source property target)))
-	(error "I don't know this property."))))
+	(error "Ops! I don't know this pointer/property."))))
 
 
 (defun add-pointers (ss ss-res pointers)
@@ -98,9 +99,6 @@
     (add-wordsenses synset ss-uri (synset-words synset))
     (add-pointers synset ss-uri (synset-pointers synset))))
 
-
-;; (:key "170th%5:00:00:ordinal:00" :lemma "170th" :ss-type "5"
-;;  :lexfilenum 0 :synset "02211436" :sense-number 1 :tag-count 0)
 
 (defun add-senseidx (senseidx)
   (let ((ss-uri (make-synset-uri (getf senseidx :synset) 

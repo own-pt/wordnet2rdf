@@ -1,10 +1,11 @@
 
 * Pending
 
-** TODO verb sentences examples
 ** TODO total workflow
-** TODO tagCount 
 ** TODO Identify what to extract from index.XXXX files.
+** TODO cleanup the triple store before serialize it.
+** DONE tagCount 
+** DONE verb sentences examples
 ** DONE parsing adj marks
 ** DONE adj and adv synsets (sattelities)
 

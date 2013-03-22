@@ -1,6 +1,5 @@
 ;;;; lattes-to-bibtex.asd
 
-
 ;; For info why the dependencies file is necessary, read
 ;; http://weitz.de/packages.html
 
