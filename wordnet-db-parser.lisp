@@ -12,10 +12,17 @@
     (push (subseq data pos (+ pos size)) res)))
 
 
-(defun parse-word (word)
-  (let ((hexval (nth 1 word))) 
-    (setf (nth 1 word) (parse-integer hexval :radix 16))
-    word))
+(defun parse-word (word &optional (adj nil))
+  (if (not (null adj))
+      (multiple-value-bind (m g)
+	  (scan-to-strings "(.*)\\((a|p|ip)\\)" (nth 0 word))
+	(if (null m)
+	    (list (nth 0 word) 
+		  (parse-integer (nth 1 word) :radix 16) nil)
+	    (list (aref g 0)
+		  (parse-integer (nth 1 word) :radix 16) (aref g 1))))
+      (list (nth 0 word) 
+	    (parse-integer (nth 1 word) :radix 16) nil)))
 
 (defun parse-pointer (ptr)
   (let ((hexval (nth 3 ptr))) 
@@ -38,13 +45,16 @@
 	 (p-cnt (parse-integer (nth p-cnt-pos data)))
 	 (fields (+ 5 (* 2 w-cnt) (* 4 p-cnt)))
 	 (f-cnt (if (> (length data) fields)
-		    (parse-integer (nth fields data)) 0)))
+		    (parse-integer (nth fields data)) 0))
+	 (words (if (search (nth 2 data) "as")  
+		    (mapcar (lambda (w) (parse-word w t)) (collect data 4 2 w-cnt))
+		    (mapcar #'parse-word (collect data 4 2 w-cnt)))))
     (make-instance 'synset 
 		   :id (nth 0 data)
 		   :lex-filenum (parse-integer (nth 1 data))
 		   :ss-type (nth 2 data)
 		   :gloss (string-trim '(#\Space) gloss)
-		   :words (mapcar #'parse-word (collect data 4 2 w-cnt))
+		   :words words
 		   :pointers (mapcar #'parse-pointer (collect data (+ p-cnt-pos 1) 4 p-cnt))
 		   :frames (mapcar #'parse-frame (collect data (+ 1 fields) 3 f-cnt)))))
 
@@ -75,15 +85,15 @@
 	 (key (nth 0 data))
 	 (keyparts (cl-ppcre:split "%" key))
 	 (lemma (car keyparts))
-	 (keyrest (cl-ppcre:split ":" (cadr keyparts)))
-	 (ss-type (nth 0 keyrest))
-	 (lexfile (nth 1 keyrest)))
-    (list :key key :lemma lemma 
-	  :ss-type (parse-integer ss-type) 
-	  :lexfilenum (parse-integer lexfile) 
-	  :synset (nth 1 data) 
+	 (keyrest (cl-ppcre:split ":" (cadr keyparts))))
+    (list :key key 
+	  :lemma lemma 
+	  :ss-type    (parse-integer (nth 0 keyrest)) 
+	  :lexfilenum (parse-integer (nth 1 keyrest)) 
+	  :lexid      (parse-integer (nth 2 keyrest))
+	  :synset       (nth 1 data) 
 	  :sense-number (nth 2 data) 
-	  :tag-count (nth 3 data))))
+	  :tag-count    (nth 3 data))))
 
 
 (defun parser-sents (line)
@@ -93,6 +103,11 @@
     (list (parse-integer (aref a 0)) 
 	  (aref a 1))))
 
+; abhor%2:37:00:: 138,139,15
+(defun parser-sentidx (line)
+  (let ((data (cl-ppcre:split " " line)))
+    (list :key (nth 0 data)
+	  :examples (mapcar #'parse-integer (cl-ppcre:split "," (nth 1 data))))))
 
 (defun parser-lexnames (line)
   (multiple-value-bind (m g) 

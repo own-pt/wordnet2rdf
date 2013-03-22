@@ -32,6 +32,8 @@
     (add-triple ws-uri !wn20:lexicalId (literal (write-to-string (nth 1 ws))))
     ; word number is different from sense number
     (add-triple ws-uri !wn20:wordNumber (literal (write-to-string ws-num)))
+    (if (nth 2 ws)
+	(add-triple ws-uri !wn20:syntacticMarker (literal (nth 2 ws))))
     (add-triple ss-res !wn20:containsWordSense ws-uri)
     ; add RDF list too
     (with-blank-nodes (w)
@@ -108,5 +110,15 @@
       (add-triple w !wn20:senseKey    (literal (getf senseidx :key)))
       (add-triple w !wn20:lemma       (literal (getf senseidx :lemma)))
       (add-triple w !wn20:senseNumber (literal (getf senseidx :sense-number)))
+      (add-triple w !wn20:lexfile     (literal (cadr (assoc (getf senseidx :lexfilenum) *lexnames*))))
+      (add-triple w !wn20:lexId       (literal (write-to-string (getf senseidx :lexid))))
       (add-triple w !wn20:tagCount    (literal (getf senseidx :tag-count)))
       (add-triple ss-uri !wn20:containsSenseIndex w))))
+
+
+(defun add-sentidx (sentidx)
+  (with-blank-nodes (w)
+    (add-triple w !rdf:type !wn20:SenseIndex)
+    (add-triple w !wn20:senseKey    (literal (getf sentidx :key)))
+    (dolist (e (getf sentidx :examples))
+      (add-triple w !wn20:example (literal (cadr (assoc e *sents*)))))))
