@@ -12,7 +12,8 @@
 	       (:file "common"  :depends-on ("package"))
 	       (:file "translations"      :depends-on ("common"))
 	       (:file "wordnet-db-parser" :depends-on ("common"))
-	       (:file "ag-loader"         :depends-on ("common"))))
+	       (:file "ag-loader"         :depends-on ("common"))
+	       (:file "process"           :depends-on ("ag-loader"))))
 
 ;; (:file "convert")
 ;; (:file "prolog-loader")

@@ -103,7 +103,7 @@
     (list (parse-integer (aref a 0)) 
 	  (aref a 1))))
 
-; abhor%2:37:00:: 138,139,15
+
 (defun parser-sentidx (line)
   (let ((data (cl-ppcre:split " " line)))
     (list :key (nth 0 data)
