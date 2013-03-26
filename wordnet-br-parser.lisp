@@ -1,31 +1,23 @@
-
 ;; Referencias:
 ;; - http://code.google.com/p/cl-en/source/browse/trunk/basics.lisp#148
 ;; - http://www.ibm.com/developerworks/xml/tutorials/x-usax/
 ;; - http://common-lisp.net/project/cxml/
 ;; - http://common-lisp.net/project/cxml/saxoverview/index.html
 
-(ql:quickload :cxml)
-(ql:quickload :cl-ppcre)
-(ql:quickload :csv-parser)
-(ql:quickload :uri-template)
+(in-package :wordnet2rdf)
 
-(uri-template:enable-uri-template-syntax)
+(defparameter *xml-fields* '(("BC" . bc) 
+			     ("WN-3.0-Synset" . id)
+			     ("PT-Words-Man"  . words-man)
+			     ("PT-Word-Cand"  . words-sug)
+			     ("PT-Gloss"      . gloss-man)
+			     ("PT-Gloss-Sug"  . gloss-sug)
+			     ("EN-Gloss"      . gloss-en)
+			     ("EN-Words"      . words-en)
+			     ("SPA-Words-Sug" . words-sp)
+			     ("Comments"      . comments)))
 
-(defparameter *fields* '(("BC" . bc) 
-			 ("WN-3.0-Synset" . id)
-			 ("PT-Words-Man"  . words-man)
-			 ("PT-Word-Cand"  . words-sug)
-			 ("PT-Gloss"      . gloss-man)
-			 ("PT-Gloss-Sug"  . gloss-sug)
-			 ("EN-Gloss"      . gloss-en)
-			 ("EN-Words"      . words-en)
-			 ("SPA-Words-Sug" . words-sp)))
-
-(defparameter *EXTRA* nil)
-(defparameter *OUTFILE* #P"wn-data-por.tab")
-
-(defclass synset ()
+(defclass synset-br ()
   ((id :initform nil)
    (bc :initform nil)
    (words-man :initform nil)
@@ -34,7 +26,29 @@
    (gloss-sug :initform nil)
    (gloss-en  :initform nil)
    (words-en  :initform nil)
-   (words-sp  :initform nil)))
+   (words-sp  :initform nil)
+   (comments  :initform nil)))
+
+
+(defun synset-br2en (ss-br)
+  (let* ((id (slot-value ss-br 'id))
+	 (id-pos (subseq id 0 1))
+	 (id-offset (format nil "~8,'0d" (parse-integer (subseq id 1))))
+	 (words-slot (if (not (slot-value ss-br 'words-man))
+			 'words-sug 
+			 'words-man))
+	 (words nil))
+    (dolist (w (cl-ppcre:split "\\s*(,|;)\\s*" (string-trim '(#\Space #\Tab) (slot-value ss-br words-slot))))
+      (push (list w nil nil) words))
+    (make-instance 'synset 
+		   :id id-offset
+		   :ss-type id-pos
+		   :words words
+		   :gloss (if (not (slot-value ss-br 'gloss-man)) 
+			      (slot-value ss-br 'gloss-sug) 
+			      (slot-value ss-br 'gloss-man))
+		   :notes (if (slot-value ss-br 'comments)
+			      (slot-value ss-br 'comments)))))
 
 
 (defclass sax-handler (sax:default-handler)
@@ -48,9 +62,9 @@
   (with-slots (current-ss current-field stack) h
     (cond 
       ((equal local-name "row") 
-       (setf current-ss (make-instance 'synset)))
-      ((assoc local-name *fields* :test 'equal) 
-       (setf current-field (cdr (assoc local-name *fields* :test 'equal)))
+       (setf current-ss (make-instance 'synset-br)))
+      ((assoc local-name *xml-fields* :test 'equal) 
+       (setf current-field (cdr (assoc local-name *xml-fields* :test 'equal)))
        (setf stack nil)))))
 
 
@@ -59,8 +73,9 @@
     (cond 
       ((equal local-name "row") 
        (push current-ss synsets))
-      ((assoc local-name *fields* :test 'equal) 
-       (setf (slot-value current-ss current-field) (format nil "~{~A~}" (reverse stack)))
+      ((assoc local-name *xml-fields* :test 'equal) 
+       (if (> (length stack) 0)
+	   (setf (slot-value current-ss current-field) (format nil "~{~A~}" (reverse stack))))
        (setf stack nil)))))
 
 
@@ -69,43 +84,5 @@
     (push data stack)))
 
 
-(defun synset-format (synset stream)
-  (let* ((id (slot-value synset 'id))
-	 (id-pos (subseq id 0 1))
-	 (id-offset (format nil "~8,'0d" (parse-integer (subseq id 1))))
-	 (the-slot 'words-man))
-    (if (equal "" (slot-value synset 'words-man))
-	(setf the-slot 'words-sug))
-    (dolist (w (cl-ppcre:split "\\s*(,|;)\\s*" (string-trim '(#\Space #\Tab) (slot-value synset the-slot))))
-      (let ((reg (list (format nil "~a-~a" id-offset id-pos) 
-					      "lemma" 
-					      w)))
-	(if *EXTRA* 
-	    (progn 
-	      (nconc reg (list the-slot))
-	      (nconc reg (list #Uhttp://logics.emap.fgv.br/wn30pt/{w}))))
-	(csv-parser:write-csv-line stream reg)))))
 
 
-;; using the parser and csv formatter
-  
-;; (let ((my (make-instance 'sax-handler)))
-;;   (cxml:parse #P"/Users/arademaker/work/WordNet-BR/uwn-pt-sorted-ah.xml" my)
-;;   (mapcar (lambda (s) 
-;; 	    (list (slot-value s 'id)  
-;; 		  (slot-value s 'words-man)
-;; 		  (slot-value s 'words-sug)))
-;; 	  (slot-value my 'synsets)))
-
-
-(setf csv-parser:*field-separator* #\Tab)
-
-(with-open-file (out *OUTFILE* :direction :output :if-exists :supersede)
-  (write-line "# OpenWN-PT	por	https://github.com/arademaker/wordnet-br	CC by SA 3.0" out)
-  (dolist (file (directory #P"/Users/arademaker/work/WordNet-BR/uwn-*.xml"))
-    (let ((my (make-instance 'sax-handler)))
-      (cxml:parse file my)
-      (mapcar (lambda (s) (synset-format s out)) (slot-value my 'synsets)))))
-
-
-(exit)

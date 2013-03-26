@@ -3,21 +3,26 @@
 
 (defclass synset ()
   ((id          :initarg :id 
-		:reader synset-id)
+		:initform nil
+		:accessor synset-id)
    (lex-filenum :initarg :lex-filenum 
-		:reader synset-lnum)
+		:initform nil
+		:accessor synset-lnum)
    (ss-type     :initarg :ss-type 
-		:reader synset-type)  
+		:accessor synset-type)  
    (words       :initarg :words 
 		:initform nil
-		:reader synset-words) 
+		:accessor synset-words) 
    (pointers    :initarg :pointers 
 		:initform nil
-		:reader synset-pointers)
+		:accessor synset-pointers)
    (gloss       :initarg :gloss
-		:reader synset-gloss)
+		:accessor synset-gloss)
    (frames      :initarg :frames 
 		:initform nil
-		:reader synset-frames)))
+		:accessor synset-frames)
+   (notes      :initarg :notes 
+		:initform nil
+		:accessor synset-notes)))
 
 

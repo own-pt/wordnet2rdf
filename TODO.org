@@ -1,9 +1,10 @@
 
 * Pending
 
-** TODO total workflow
 ** TODO Identify what to extract from index.XXXX files.
 ** TODO cleanup the triple store before serialize it.
+** TODO bc field from worndet-br? bc from the others?
+** DONE total workflow
 ** DONE tagCount 
 ** DONE verb sentences examples
 ** DONE parsing adj marks
