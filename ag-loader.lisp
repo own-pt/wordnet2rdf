@@ -9,11 +9,11 @@
 
 (in-package :wordnet2rdf)
 
-(defun make-synset-uri (ss-id ss-type &key (ns "wn30"))
+(defun make-synset-uri (ss-id ss-type &key (ns "wn30i"))
   (resource (format nil "synset-~a-~a" ss-id ss-type) ns))
 
 
-(defun synset-uri (ss &key (ns "wn30"))
+(defun synset-uri (ss &key (ns "wn30i"))
   (make-synset-uri (synset-id ss) (synset-type ss) :ns ns))
 
 
@@ -21,11 +21,11 @@
   (caddr (assoc (synset-type ss) *type-table* :test 'equal)))
 
 
-(defun wordsense-uri (ss-id ss-type ws-num &key (ns "wn30"))
+(defun wordsense-uri (ss-id ss-type ws-num &key (ns "wn30i"))
   (resource (format nil "wordsense-~a-~a-~a" ss-id ss-type ws-num) ns))
 
 
-(defun add-wordsense (ss ss-res ws-num ws &key (ns "wn30"))
+(defun add-wordsense (ss ss-res ws-num ws &key (ns "wn30i"))
   (let ((ws-uri (wordsense-uri (synset-id ss) (synset-type ss) ws-num :ns ns))
 	(word (literal (nth 0 ws))))
     (add-triple ws-uri !rdf:type !wn20:WordSense)
@@ -53,7 +53,7 @@
 	pvalue)))
 
 
-(defun add-pointer (ss ss-res p &key (ns "wn30"))
+(defun add-pointer (ss ss-res p &key (ns "wn30i"))
   (let ((snum (nth 3 p))
 	(tnum (nth 4 p))
 	(property (get-property (synset-type ss) p)))
@@ -66,7 +66,7 @@
 	(error "Ops! I don't know this pointer/property."))))
 
 
-(defun add-frame (ss ss-res frame &key (ns "wn30"))
+(defun add-frame (ss ss-res frame &key (ns "wn30i"))
   (let ((sentence (literal (nth (1- (nth 0 frame)) *frames*)))) 
     (if (= 0 (nth 1 frame))
 	(add-triple ss-res !wn20:frame sentence)
@@ -74,13 +74,15 @@
 	  (add-triple source !wn20:frame sentence)))))
 
 
-(defun add-synset (synset &key (ns "wn30"))
+(defun add-synset (synset &key (ns "wn30i"))
   (let ((ss-uri (synset-uri synset :ns ns))
 	(lexname (if (synset-lnum synset)
 		     (cadr (assoc (synset-lnum synset) *lexnames*)))))
     (add-triple ss-uri !rdf:type (synset-class synset))
     (add-triple ss-uri !wn20:synsetId (literal (synset-id synset)))
     (add-triple ss-uri !wn20:gloss (literal (synset-gloss synset)))
+    (if (synset-base synset)
+	(add-triple ss-uri !rdf:type !wn20:BaseConcept))
     (if lexname 
 	(add-triple ss-uri !wn20:lexicographerFile (literal lexname)))
     (dolist (f (synset-frames synset))

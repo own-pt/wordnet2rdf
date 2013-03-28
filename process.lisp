@@ -28,5 +28,5 @@
   (dolist (file (directory *wordnet-br-dir*))
     (let ((my (make-instance 'sax-handler)))
       (cxml:parse file my)
-      (mapcar (lambda (ss) (add-synset (synset-br2en ss))) 
+      (mapcar (lambda (ss) (add-synset (synset-br2en ss) :ns "wn30br")) 
 	      (slot-value my 'synsets)))))

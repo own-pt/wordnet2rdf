@@ -43,12 +43,11 @@
     (make-instance 'synset 
 		   :id id-offset
 		   :ss-type id-pos
+		   :base (not (string= (slot-value ss-br 'bc) "99999999"))
 		   :words words
-		   :gloss (if (not (slot-value ss-br 'gloss-man)) 
-			      (slot-value ss-br 'gloss-sug) 
-			      (slot-value ss-br 'gloss-man))
-		   :notes (if (slot-value ss-br 'comments)
-			      (slot-value ss-br 'comments)))))
+		   :gloss (or (slot-value ss-br 'gloss-man) 
+			      (slot-value ss-br 'gloss-sug))
+		   :notes (slot-value ss-br 'comments))))
 
 
 (defclass sax-handler (sax:default-handler)

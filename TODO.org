@@ -1,10 +1,16 @@
 
 * Pending
 
-** TODO Identify what to extract from index.XXXX files.
-** TODO cleanup the triple store before serialize it.
 ** TODO bc field from worndet-br? bc from the others?
+** TODO cleanup the triple store before serialize it.
+** DONE Identify what to extract from index.XXXX files.
+
+No new information.
+
 ** DONE total workflow
+
+File process.lisp
+
 ** DONE tagCount 
 ** DONE verb sentences examples
 ** DONE parsing adj marks
