@@ -9,11 +9,10 @@
 
 (in-package :wordnet2rdf)
 
+(defparameter *data-files* (list "data.noun" "data.verb" "data.adj" "data.adv"))
 (defparameter *wordnet-dict-dir* #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/")
 (defparameter *wordnet-br-dir*   #P"/Users/arademaker/work/WordNet-BR/uwn-*.xml")
-
-(defparameter *data-files* (list "data.noun" "data.verb" "data.adj" "data.adv"))
-
+(defparameter *core-file* #P"/Users/arademaker/Temp/wordnet/core/wn30-core-synsets.tab")
 
 (defun load-all ()
   (progn 
@@ -21,8 +20,8 @@
     (dolist (f *data-files*)
       (mapcar #'add-synset (parse-file (merge-pathnames *wordnet-dict-dir* f) #'parse-data-line)))
     (mapcar #'add-senseidx (parse-file (merge-pathnames *wordnet-dict-dir* #P"index.sense") #'parser-senseidx))
-    (mapcar #'add-sentidx (parse-file (merge-pathnames *wordnet-dict-dir* #P"sentidx.vrb") #'parser-sentidx))))
-
+    (mapcar #'add-sentidx (parse-file (merge-pathnames *wordnet-dict-dir* #P"sentidx.vrb") #'parser-sentidx))
+    (mapcar #'add-core (parse-file *core-file* #'parser-core))))
 
 (defun load-br () 
   (dolist (file (directory *wordnet-br-dir*))

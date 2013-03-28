@@ -104,6 +104,13 @@
 	  (aref a 1))))
 
 
+(defun parser-core (line)
+  (multiple-value-bind (s a) 
+      (scan-to-strings "([0-9]+)-([asrnv])" line)
+    (declare (ignore s)) 
+    (list :offset (aref a 0) :type (aref a 1))))
+
+
 (defun parser-sentidx (line)
   (let ((data (cl-ppcre:split " " line)))
     (list :key (nth 0 data)
