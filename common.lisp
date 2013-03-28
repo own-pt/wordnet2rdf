@@ -24,9 +24,6 @@
    (base        :initarg :base
 		:initform nil
 		:accessor synset-base)
-   (core        :initarg :core
-		:initform nil
-		:accessor synset-core)
    (notes       :initarg :notes 
 		:initform nil
 		:accessor synset-notes)))
