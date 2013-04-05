@@ -3,7 +3,7 @@
 ;;  Author: Alexandre Rademaker
 ;; Project: Wordnet-BR
 ;;
-;; Description: Given a mapping of WordNet to RDF
+;; Description: Given the general ideas of a mapping of WordNet to RDF
 ;; (http://www.w3.org/TR/wordnet-rdf/) this code creates an Allegro
 ;; Graph triplestore for the parsed database files from WordNet 3.0.
 

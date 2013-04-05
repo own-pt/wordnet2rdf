@@ -34,12 +34,11 @@
   (let* ((id (slot-value ss-br 'id))
 	 (id-pos (subseq id 0 1))
 	 (id-offset (format nil "~8,'0d" (parse-integer (subseq id 1))))
-	 (words-slot (if (not (slot-value ss-br 'words-man))
-			 'words-sug 
-			 'words-man))
-	 (words nil))
-    (dolist (w (cl-ppcre:split "\\s*(,|;)\\s*" (string-trim '(#\Space #\Tab) (slot-value ss-br words-slot))))
-      (push (list w nil nil) words))
+	 (words nil))    
+    (dolist (w (cl-ppcre:split "\\s*(,|;)\\s*" 
+			       (or (slot-value ss-br 'words-man)
+				   (slot-value ss-br 'words-sug))))
+      (pushnew (list (string-trim '(#\Space #\Tab) w) nil nil) words :key 'car :test 'equal))
     (make-instance 'synset 
 		   :id id-offset
 		   :ss-type id-pos
@@ -81,7 +80,4 @@
 (defmethod sax:characters ((h sax-handler) (data t))
   (with-slots (stack) h
     (push data stack)))
-
-
-
 

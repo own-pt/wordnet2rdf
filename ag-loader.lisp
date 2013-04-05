@@ -80,7 +80,8 @@
 		     (cadr (assoc (synset-lnum synset) *lexnames*)))))
     (add-triple ss-uri !rdf:type (synset-class synset))
     (add-triple ss-uri !wn30:synsetId (literal (synset-id synset)))
-    (add-triple ss-uri !wn30:gloss (literal (synset-gloss synset)))
+    (if (synset-gloss synset)
+	(add-triple ss-uri !wn30:gloss (literal (synset-gloss synset))))
     (if (synset-base synset)
 	(add-triple ss-uri !rdf:type !wn30:BaseConcept))
     (if lexname 
