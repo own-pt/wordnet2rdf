@@ -13,6 +13,7 @@
 (defparameter *wordnet-dict-dir* #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/")
 (defparameter *wordnet-br-dir*   #P"/Users/arademaker/work/WordNet-BR/uwn-*.xml")
 (defparameter *core-file* #P"/Users/arademaker/Temp/wordnet/core/wn30-core-synsets.tab")
+(defparameter *sentiwordnet* #P"/Users/arademaker/work/IBM/scolapp/SentiWordNet_3.0.0/SentiWordNet_3.0.0_20130122.txt")
 
 (defun load-all ()
   (progn 
@@ -29,3 +30,8 @@
       (cxml:parse file my)
       (mapcar (lambda (ss) (add-synset (synset-br2en ss) :ns "wn30br")) 
 	      (slot-value my 'synsets)))))
+
+
+(defun load-sentiwordnet ()
+  (mapcar #'add-sentiwordnet (parse-sentiwordnet *sentiwordnet*)))
+

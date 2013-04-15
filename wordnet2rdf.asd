@@ -14,6 +14,7 @@
 	       (:file "wordnet-db-parser" :depends-on ("common"))
 	       (:file "wordnet-br-parser" :depends-on ("common"))
 	       (:file "ag-loader"         :depends-on ("common"))
+	       (:file "sentiwordnet"      :depends-on ("ag-loader"))
 	       (:file "process"           :depends-on ("ag-loader"))))
 
 ;; (:file "convert")
