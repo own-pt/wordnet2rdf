@@ -13,3 +13,4 @@
 (register-namespace "swn30"  "http://arademaker.github.com/swn30/schema/" :errorp nil)
 
 (create-triple-store "wn30")
+

@@ -112,7 +112,7 @@
 (defun add-sentidx (sentidx)
   (with-blank-nodes (w)
     (add-triple w !rdf:type !wn30:SenseIndex)
-    (add-triple w !wn30:senseKey    (literal (getf sentidx :key)))
+    (add-triple w !wn30:senseKey (literal (getf sentidx :key)))
     (dolist (e (getf sentidx :examples))
       (add-triple w !wn30:example (literal (cadr (assoc e *sents*)))))))
 
