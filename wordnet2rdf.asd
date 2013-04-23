@@ -15,7 +15,8 @@
 	       (:file "wordnet-br-parser" :depends-on ("common"))
 	       (:file "ag-loader"         :depends-on ("common"))
 	       (:file "sentiwordnet"      :depends-on ("ag-loader"))
-	       (:file "process"           :depends-on ("ag-loader"))))
+	       (:file "process"           :depends-on ("ag-loader"))
+	       (:file "deduplication"     :depends-on ("ag-loader"))))
 
 ;; (:file "convert")
 ;; (:file "prolog-loader")

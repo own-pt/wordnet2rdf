@@ -1,7 +1,11 @@
 
 * Pending
 
-** TODO cleanup the triple store before serialize it.
+** TODO type in wordnet-br a mismatch type s in WordNet-3
+
+Evidence word "gordo"
+
+** DONE cleanup the triple store before serialize it.
 
 IndexSense and WordSense must be merged.
 
