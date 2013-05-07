@@ -120,31 +120,3 @@
     (q- ?ss2 !rdf:type !wn30:AdjectiveSatelliteSynset)))
 
 
-;; The code below if for AG version 3.3 which requires manually
-;; indexing.
-
-;; (defparameter *index-count* 0)
-
-;; (defun my-index ()
-;;   (if (> *index-count* 100)
-;;       (progn 
-;; 	(format *debug-io* "Indexing all~%")
-;; 	(index-all-triples)
-;; 	(setf *index-count* 0))
-;;       (progn 
-;; 	(format *debug-io* "Indexing new~%")
-;; 	(index-new-triples)
-;; 	(setf *index-count* (1+ *index-count*)))))
-
-;; (defun group-nodes-1 (key value)
-;;   (declare (ignore key))
-;;   (if (> (length value) 1)
-;;       (progn 
-;; 	(format *debug-io* "Merging group ~a~%" value)
-;; 	(let ((master (car value)))
-;; 	  (dolist (other (cdr value))
-;; 	    (progn 
-;; 	      (format *debug-io* "Transfer ~a to ~a~%" (car other) (car master))
-;; 	      (merge-nodes (car other) (car master))))
-;; 	  (my-index)))))
-

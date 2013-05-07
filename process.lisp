@@ -12,9 +12,18 @@
 (defparameter *data-files* (list "data.noun" "data.verb" "data.adj" "data.adv"))
 (defparameter *src*              #P"/Users/arademaker/work/IBM/scolapp/")
 (defparameter *wordnet-br-dir*   #P"/Users/arademaker/work/WordNet-BR/uwn-*.xml")
-(defparameter *wordnet-dict-dir* (merge-pathnames *src* #P"wordnet/WordNet-3.0/dict/"))
-(defparameter *core-file*        (merge-pathnames *src* #P"wordnet/core/wn30-core-synsets.tab"))
-(defparameter *sentiwordnet*     (merge-pathnames *src* #P"SentiWordNet/SentiWordNet_3.0.0_20130122.txt"))
+(defparameter *wordnet-dict-dir* (merge-pathnames #P"wordnet/WordNet-3.0/dict/" *src*))
+(defparameter *core-file*        (merge-pathnames #P"wordnet/core/wn30-core-synsets.tab" *src*))
+(defparameter *sentiwordnet*     (merge-pathnames #P"SentiWordNet/SentiWordNet_3.0.0_20130122.txt" *src*))
+
+
+(defparameter *sents* (parse-file  (merge-pathnames #P"wordnet/WordNet-3.0/dict/sents.vrb" *src*) 
+				   #'parser-sents) 
+  "parsing and loading the verb example sentences")
+
+(defparameter *lexnames* (parse-file (merge-pathnames #P"wordnet/WordNet-3.0/dict/lexnames" *src*) 
+				     #'parser-lexnames)  
+  "parsing and loading the lexname file")
 
 
 (defun load-en ()
@@ -26,6 +35,7 @@
     (mapcar #'add-sentidx (parse-file (merge-pathnames *wordnet-dict-dir* #P"sentidx.vrb") #'parser-sentidx))
     (mapcar #'add-core (parse-file *core-file* #'parser-core))))
 
+
 (defun load-br () 
   (dolist (file (directory *wordnet-br-dir*))
     (let ((my (make-instance 'sax-handler)))
@@ -33,8 +43,10 @@
       (mapcar (lambda (ss) (add-synset (synset-br2en ss) :ns "wn30br")) 
 	      (slot-value my 'synsets)))))
 
+
 (defun load-sentiwordnet ()
   (mapcar #'add-sentiwordnet (parse-sentiwordnet *sentiwordnet*)))
+
 
 (defun load-all ()
   (load-en)

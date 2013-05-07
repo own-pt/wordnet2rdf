@@ -125,9 +125,4 @@
 	  (parse-integer (aref g 2)))))
 
 
-(defparameter *sents* (parse-file #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/sents.vrb" #'parser-sents) 
-  "parsing and loading the verb example sentences")
-
-(defparameter *lexnames* (parse-file #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/lexnames" #'parser-lexnames)  
-  "parsing and loading the lexname file")
 
