@@ -1,10 +1,15 @@
 
 * Pending
 
+** TODO "não" case in Wordnet-BR
+
+A palavra não está mapeando para um synset aparentemente errado na WordNet.
+
 ** TODO type in wordnet-br a mismatch type s in WordNet-3
 
-Evidence word "gordo"
+Evidence word "gordo" (br a -> en s). ruim (br a -> en s)
 
+** TODO remove lemma from wordsenses?
 ** DONE cleanup the triple store before serialize it.
 
 IndexSense and WordSense must be merged.

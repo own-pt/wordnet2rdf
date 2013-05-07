@@ -10,10 +10,11 @@
 (in-package :wordnet2rdf)
 
 (defparameter *data-files* (list "data.noun" "data.verb" "data.adj" "data.adv"))
-(defparameter *wordnet-dict-dir* #P"/Users/arademaker/Temp/wordnet/WordNet-3.0/dict/")
+(defparameter *src*              #P"/Users/arademaker/work/IBM/scolapp/")
 (defparameter *wordnet-br-dir*   #P"/Users/arademaker/work/WordNet-BR/uwn-*.xml")
-(defparameter *core-file* #P"/Users/arademaker/Temp/wordnet/core/wn30-core-synsets.tab")
-(defparameter *sentiwordnet* #P"/Users/arademaker/work/IBM/scolapp/SentiWordNet_3.0.0/SentiWordNet_3.0.0_20130122.txt")
+(defparameter *wordnet-dict-dir* (merge-pathnames *src* #P"wordnet/WordNet-3.0/dict/"))
+(defparameter *core-file*        (merge-pathnames *src* #P"wordnet/core/wn30-core-synsets.tab"))
+(defparameter *sentiwordnet*     (merge-pathnames *src* #P"SentiWordNet/SentiWordNet_3.0.0_20130122.txt"))
 
 
 (defun load-en ()
