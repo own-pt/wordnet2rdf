@@ -1,6 +1,10 @@
 
 * Pending
 
+** TODO Improve debug of the functions
+
+http://xach.livejournal.com/316925.html
+
 ** TODO "não" case in Wordnet-BR
 
 A palavra não está mapeando para um synset aparentemente errado na WordNet.
