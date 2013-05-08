@@ -12,7 +12,7 @@
 ;;   cut -d " " -f 1 index.sense > lixo.2
 ;;   cat lixo.1 lixo.2 | sort | uniq | wc -l
 
-(in-package :wordnet2rdf)
+(in-package :db.agraph.user)
 
 (defun merge-nodes (old new)
   "Transfer all in and out edges from OLD to NEW, except owl:sameAs edges."
@@ -74,7 +74,9 @@
 ; WordNet-3.0 has 29 SenseIndex nodes with the same lemma+lexid of
 ; other 2 WordSenses. For 28 cases, it doesn't matter because both
 ; WordSense are indistinguishabe. In one case (Utopia0) we have to
-; mannualy remove one sameAs triple before deduplicate the nodes.
+; mannualy remove one sameAs triple before deduplicate the nodes. I
+; choose the one related with wn30i:wordsense-03020193-a-2 which is a
+; sense related to the synset 07283198.
 
 (defun identify-senseindex/wordsense ()
   (select0/callback (?si ?ws) 
@@ -91,7 +93,7 @@
 		  (concatenate 'string (part->value ?l2) (part->value ?i2))))))
 
 
-(defun deduplicate-senseindex/wordsense (c)
+(defun deduplicate-sameAs (c)
   (do* ((tripla (get-triple :p !owl:sameAs)
 		(get-triple :p !owl:sameAs))
 	(counter 0 
@@ -108,15 +110,39 @@
   (delete-triples :p !wn30:lexId)
   (delete-triples :p !wn30:containsSenseIndex))
 
+;; After the previous function, the following query was executed in
+;; the web interface:
+;;
+;; delete {
+;;   ?ws wn30:lemma ?val .
+;;   }	where {
+;;   ?ws wn30:lemma ?val .
+;;   ?ws a wn30:WordSense .
+;; }
 
-(defun correct-synsets-br ()
-  (select0/callback (?ss1 ?id) 
-      (lambda (p)
-	(let ((addr (format nil "synset-~a-s" (part->value (second p)))))
-	  (add-triple (first p) !owl:sameAs (resource addr "wn30br"))))
-    (q- ?ss1 !wn30:synsetId ?id)
-    (q- ?ss1 !rdf:type !wn30:AdjectiveSynset)
-    (q- ?ss2 !wn30:synsetId ?id)
-    (q- ?ss2 !rdf:type !wn30:AdjectiveSatelliteSynset)))
 
+;; Finally, we must fix Wordnet-BR mapping the adjective synsets
+;; that in WordNet 3.0 are actually adjectives satellite. I did it in
+;; two steps. First run the query below:
+;;
+;; construct { ?a owl:sameAs ?a } 
+;; where {
+;;   ?a a wn30:AdjectiveSatelliteSynset .
+;; }
+;; 
+;; Some manual edition are necessary in the generated ttl file. This
+;; file will have owl:sameAs triples mapping all satellite
+;; synsets to the coresponding adjective synset.
+;;
+;; Old code:
+;;
+;; (defun correct-synsets-br ()
+;;   (select0/callback (?ss1 ?id) 
+;;       (lambda (p)
+;; 	(let ((addr (format nil "synset-~a-s" (part->value (second p)))))
+;; 	  (add-triple (first p) !owl:sameAs (resource addr "wn30br"))))
+;;     (q- ?ss1 !wn30:synsetId ?id)
+;;     (q- ?ss1 !rdf:type !wn30:AdjectiveSynset)
+;;     (q- ?ss2 !wn30:synsetId ?id)
+;;     (q- ?ss2 !rdf:type !wn30:AdjectiveSatelliteSynset)))
 

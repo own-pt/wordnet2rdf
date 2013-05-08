@@ -5,9 +5,9 @@
 
 http://xach.livejournal.com/316925.html
 
-** TODO "não" case in Wordnet-BR
+** TODO improves in the Wordnet-br
 
-A palavra não está mapeando para um synset aparentemente errado na WordNet.
+não, burro, leão, foda, bunda, mole, tabu, seminal, igual, mole, presente.
 
 ** TODO type in wordnet-br a mismatch type s in WordNet-3
 
