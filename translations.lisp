@@ -42,7 +42,6 @@
 
 
 ;; remember that frames are ordered from 1-35
-
 (defparameter *frames* '("Something ----s"
 			 "Somebody ----s"
 			 "It is ----ing"

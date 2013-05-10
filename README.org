@@ -1,0 +1,134 @@
+
+* Pending
+
+** TODO Improve debug of the functions
+
+http://xach.livejournal.com/316925.html
+
+** TODO improves in the Wordnet-br
+
+leão, bunda, tabu, seminal, presente.
+
+** TODO type in wordnet-br a mismatch type s in WordNet-3
+
+Evidence word "gordo" (br a -> en s). ruim (br a -> en s)
+
+** DONE remove lemma from wordsenses
+** DONE cleanup the triple store before serialize it.
+
+IndexSense and WordSense must be merged.
+
+** DONE bc field from worndet-br? bc from the others?
+
+base concepts and core concepts are mapped to types. The number of
+base concepts in the XML files from Wordnet-BR do not have any special
+meaning.
+
+** DONE Identify what to extract from index.XXXX files.
+
+No new information.
+
+** DONE total workflow
+
+File process.lisp
+
+** DONE tagCount 
+** DONE verb sentences examples
+** DONE parsing adj marks
+** DONE adj and adv synsets (sattelities)
+
+It looks like the relations between synsets encode this information presented in the sense key.
+
+** DONE lexnames
+
+* Testing 
+
+This tests can be runned using Slime connected to the remove Allegro Lisp on Amazon.
+
+** Classes
+
+The SPARQL query for obtain the list of classes and number of intances
+for each classe is given below:
+
+#+name: classes.query
+#+BEGIN_EXAMPLE
+select ?cls (count(?res) as ?count)
+where  {
+  ?res a ?cls .
+}
+group by ?cls
+#+END_EXAMPLE
+
+In the next block we can also use =:results output= and =:table= in the
+=:results-format= parameter.
+
+#+BEGIN_SRC lisp :var query=classes.query :results value
+(sparql:run-sparql query :results-format :lists)
+#+END_SRC
+
+#+RESULTS:
+| {AdjectiveSatelliteSynset} | {10693}  |
+| {VerbSynset}               | {13767}  |
+| {AdjectiveSynset}          | {7463}   |
+| {CoreConcept}              | {4960}   |
+| {AdverbSynset}             | {3621}   |
+| {NounSynset}               | {82115}  |
+| {Word}                     | {148730} |
+| {WordSense}                | {206978} |
+
+
+** Properties
+
+|----------------------------+--------+------+----------|
+| property                   |  count | ptr? | pcounter |
+|----------------------------+--------+------+----------|
+| wn30:syntacticMarker       |   1055 |    0 |        0 |
+| wn30:example               |   3993 |    0 |        0 |
+| wn30:frame                 |  21649 |    0 |        0 |
+| wn30:lexicographerFile     | 117659 |    0 |        0 |
+| wn30:gloss                 | 117659 |    0 |        0 |
+| wn30:synsetId              | 117659 |    0 |        0 |
+| wn30:lexicalForm           | 148730 |    0 |        0 |
+| wn30:lemma                 | 148730 |    0 |        0 |
+| wn30:tagCount              | 206941 |    0 |        0 |
+| wn30:senseNumber           | 206941 |    0 |        0 |
+| wn30:senseKey              | 206941 |    0 |        0 |
+| wn30:lexfile               | 206941 |    0 |        0 |
+| wn30:lexicalId             | 206978 |    0 |        0 |
+| rdf:label                  | 206978 |    0 |        0 |
+| wn30:wordNumber            | 206978 |    0 |        0 |
+| wn30:word                  | 206978 |    0 |        0 |
+| wn30:containsWordSense     | 206978 |    0 |        0 |
+| rdf:type                   | 478327 |    0 |        0 |
+| wn30:participleOf          |     73 |    1 |       73 |
+| wn30:causes                |    220 |    1 |      220 |
+| wn30:entails               |    408 |    1 |      408 |
+| wn30:substanceMeronymOf    |    797 |    1 |      797 |
+| wn30:substanceHolonymOf    |    797 |    1 |      797 |
+| wn30:attribute             |   1278 |    1 |     1278 |
+| wn30:classifiesByRegion    |   1360 |    1 |     1360 |
+| wn30:classifiedByRegion    |   1360 |    1 |     1360 |
+| wn30:classifiesByUsage     |   1376 |    1 |     1376 |
+| wn30:classifiedByUsage     |   1376 |    1 |     1376 |
+| wn30:sameVerbGroupAs       |   1750 |    1 |     1750 |
+| wn30:adverbPertainsTo      |   3222 |    1 |     3222 |
+| wn30:seeAlso               |   3272 |    1 |     3272 |
+| wn30:adjectivePertainsTo   |   4801 |    1 |     4801 |
+| wn30:classifiedByTopic     |   6654 |    1 |     6654 |
+| wn30:classifiesByTopic     |   6654 |    1 |     6654 |
+| wn30:antonymOf             |   7979 |    1 |     7979 |
+| wn30:hasInstance           |   8577 |    1 |     8577 |
+| wn30:instanceOf            |   8577 |    1 |     8577 |
+| wn30:partHolonymOf         |   9097 |    1 |     9097 |
+| wn30:partMeronymOf         |   9097 |    1 |     9097 |
+| wn30:memberHolonymOf       |  12293 |    1 |    12293 |
+| wn30:memberMeronymOf       |  12293 |    1 |    12293 |
+| wn30:similarTo             |  21386 |    1 |    21386 |
+| wn30:derivationallyRelated |  74708 |    1 |    74708 |
+| wn30:hypernymOf            |  89089 |    1 |    89089 |
+| wn30:hyponymOf             |  89089 |    1 |    89089 |
+|----------------------------+--------+------+----------|
+|                            |        |      |   377583 |
+|----------------------------+--------+------+----------|
+#+TBLFM: $4=$2*$3::@47$4=vsum(@2..@-1)
+

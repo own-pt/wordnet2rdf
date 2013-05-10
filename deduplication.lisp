@@ -2,15 +2,20 @@
 ;; The code of this file is made to be runned in AG version 4.10 (at the time it was written, the AG 4.10 
 ;; used is the one running on Amazon AWS server.
 
-;; Deduplication of entities:
+;; Deduplication of entities in wn-en:
 ;; - SenseIndex 
 ;; - SenseIndex and WordSense
 ;; - Word
+;; - cleanup
 ;;
 ;; Checking the merging of SenseIndex entities. 
 ;;   cut -d " " -f 1 sentidx.vrb > lixo.1
 ;;   cut -d " " -f 1 index.sense > lixo.2
 ;;   cat lixo.1 lixo.2 | sort | uniq | wc -l
+;;
+;; Deduplications of entities in wn-br:
+;; - Word
+;; - synsets-a that must also be synsets-s
 
 (in-package :db.agraph.user)
 
@@ -110,6 +115,7 @@
   (delete-triples :p !wn30:lexId)
   (delete-triples :p !wn30:containsSenseIndex))
 
+
 ;; After the previous function, the following query was executed in
 ;; the web interface:
 ;;
@@ -120,22 +126,21 @@
 ;;   ?ws a wn30:WordSense .
 ;; }
 
-
-;; Finally, we must fix Wordnet-BR mapping the adjective synsets
-;; that in WordNet 3.0 are actually adjectives satellite. I did it in
-;; two steps. First run the query below:
+;; Finally, we must fix Wordnet-BR adding a map from the
+;; AdjectiveSynset intances that are AdjectiveSatelliteSynset in the
+;; original WordNet. I did it using the web interface of AG and the
+;; following query:
 ;;
-;; construct { ?a owl:sameAs ?a } 
+;; construct { 
+;;   ?new1 owl:sameAs ?new2 .
+;; } 
 ;; where {
 ;;   ?a a wn30:AdjectiveSatelliteSynset .
+;;   BIND (iri(replace(str(?a),"/wn30/","/wn30-br/")) AS ?new1)
+;;   BIND (iri(replace(replace(str(?a),"/wn30/","/wn30-br/"),"-s","-a")) AS ?new2)
 ;; }
-;; 
-;; Some manual edition are necessary in the generated ttl file. This
-;; file will have owl:sameAs triples mapping all satellite
-;; synsets to the coresponding adjective synset.
 ;;
 ;; Old code:
-;;
 ;; (defun correct-synsets-br ()
 ;;   (select0/callback (?ss1 ?id) 
 ;;       (lambda (p)
