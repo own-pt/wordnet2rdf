@@ -10,7 +10,9 @@
 (in-package :wordnet2rdf)
 
 (defun make-synset-uri (ss-id ss-type &key (ns "wn30i"))
-  (resource (format nil "synset-~a-~a" ss-id ss-type) ns))
+  (if (equal ss-type "s")
+      (resource (format nil "synset-~a-a" ss-id) ns)
+      (resource (format nil "synset-~a-~a" ss-id ss-type) ns)))
 
 
 (defun synset-uri (ss &key (ns "wn30i"))
