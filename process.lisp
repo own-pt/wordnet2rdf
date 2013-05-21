@@ -15,7 +15,7 @@
 (defparameter *wordnet-dict-dir* (merge-pathnames #P"wordnet/WordNet-3.0/dict/" *src*))
 (defparameter *core-file*        (merge-pathnames #P"wordnet/core/wn30-core-synsets.tab" *src*))
 (defparameter *sentiwordnet*     (merge-pathnames #P"SentiWordNet/SentiWordNet_3.0.0_20130122.txt" *src*))
-
+(defparameter *wikidictionary*   (merge-pathnames #P"wordnet/francis/wn-wikt-por.tab" *src*))
 
 (defparameter *sents* (parse-file  (merge-pathnames #P"wordnet/WordNet-3.0/dict/sents.vrb" *src*) 
 				   #'parser-sents) 
@@ -37,11 +37,12 @@
 
 
 (defun load-br () 
-  (dolist (file (directory *wordnet-br-dir*))
-    (let ((my (make-instance 'sax-handler)))
-      (cxml:parse file my)
-      (mapcar (lambda (ss) (add-synset (synset-br2en ss) :ns "wn30br")) 
-	      (slot-value my 'synsets)))))
+  (let ((dict (parse-wikidictionary *wikidictionary*)))
+    (dolist (file (directory *wordnet-br-dir*))
+      (let ((my (make-instance 'sax-handler)))
+	(cxml:parse file my)
+	(mapcar (lambda (ss) (add-synset (expand-synset (synset-br2en ss) dict) :ns "wn30br")) 
+		(slot-value my 'synsets))))))
 
 
 (defun load-sentiwordnet ()

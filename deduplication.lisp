@@ -15,7 +15,6 @@
 ;;
 ;; Deduplications of entities in wn-br:
 ;; - Word
-;; - synsets-a that must also be synsets-s
 
 (in-package :db.agraph.user)
 
@@ -81,7 +80,9 @@
 ; WordSense are indistinguishabe. In one case (Utopia0) we have to
 ; mannualy remove one sameAs triple before deduplicate the nodes. I
 ; choose the one related with wn30i:wordsense-03020193-a-2 which is a
-; sense related to the synset 07283198.
+; sense related to the synset 07283198. Command:
+;;
+;; (delete-triples :p !owl:sameAs :o !wn30i:wordsense-03020193-a-2)
 
 (defun identify-senseindex/wordsense ()
   (select0/callback (?si ?ws) 
