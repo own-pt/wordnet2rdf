@@ -1,0 +1,8 @@
+
+# First idea of converting prolog files to lisp files. Not completed!
+
+## Step 1
+
+for f in *.pl; do awk -f prolog-to-lisp.awk $f > $(basename $f .pl).lisp; done
+
+
