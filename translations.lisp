@@ -10,9 +10,8 @@
 (defparameter *type-table-inv* (mapcar (lambda (x) (list (nth 1 x) (nth 0 x) (nth 2 x))) 
 				       *type-table*))
 
-
-(defparameter *ptrs-table* `(("@"  !wn30:hypernymOf) 
-			     ("~"  !wn30:hyponymOf)
+(defparameter *ptrs-table* `(("~"  !wn30:hypernymOf)   ;; inverse hyponym  @
+			     ("@"  !wn30:hyponymOf)    ;; inverse hypernym ~
 			     ("@i" !wn30:instanceOf) 
 			     ("~i" !wn30:hasInstance)
 			     ("%m" !wn30:memberMeronymOf) 

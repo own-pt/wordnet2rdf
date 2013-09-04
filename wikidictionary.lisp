@@ -1,4 +1,6 @@
 
+;; for parsing the data provided by Francis Bond.
+
 (in-package :wordnet2rdf)
 
 (defun parse-wikidictionary (filename)
