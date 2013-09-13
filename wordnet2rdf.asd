@@ -1,4 +1,7 @@
-;;;; lattes-to-bibtex.asd
+;; (C) 2013 IBM Corporation
+;;
+;;  Author: Alexandre Rademaker
+;; Project: Wordnet-BR
 
 ;; For info why the dependencies file is necessary, read
 ;; http://weitz.de/packages.html
@@ -19,7 +22,3 @@
 	       (:file "process"           :depends-on ("wikidictionary"))
 	       (:file "deduplication"     :depends-on ("ag-loader"))))
 
-;; (:file "convert")
-;; (:file "prolog-loader")
-;; (:file "prolog-parser")
-;; (:file "ttl-writer")

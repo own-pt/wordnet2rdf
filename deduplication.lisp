@@ -1,3 +1,5 @@
+;; (C) 2013 IBM Corporation
+;; Author: Alexandre Rademaker
 
 ;; The code of this file is made to be runned in AG version 4.10 (at the time it was written, the AG 4.10 
 ;; used is the one running on Amazon AWS server.

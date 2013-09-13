@@ -9,13 +9,13 @@
 
 (in-package :wordnet2rdf)
 
-(defun make-synset-uri (ss-id ss-type &key (ns "wn30i"))
+(defun make-synset-uri (ss-id ss-type &key (ns "wn30en"))
   (if (equal ss-type "s")
       (resource (format nil "synset-~a-a" ss-id) ns)
       (resource (format nil "synset-~a-~a" ss-id ss-type) ns)))
 
 
-(defun synset-uri (ss &key (ns "wn30i"))
+(defun synset-uri (ss &key (ns "wn30en"))
   (make-synset-uri (synset-id ss) (synset-type ss) :ns ns))
 
 
@@ -23,11 +23,11 @@
   (caddr (assoc (synset-type ss) *type-table* :test 'equal)))
 
 
-(defun wordsense-uri (ss-id ss-type ws-num &key (ns "wn30i"))
+(defun wordsense-uri (ss-id ss-type ws-num &key (ns "wn30en"))
   (resource (format nil "wordsense-~a-~a-~a" ss-id ss-type ws-num) ns))
 
 
-(defun add-wordsense (ss ss-res ws-num ws &key (ns "wn30i"))
+(defun add-wordsense (ss ss-res ws-num ws &key (ns "wn30en"))
   (let ((ws-uri (wordsense-uri (synset-id ss) (synset-type ss) ws-num :ns ns))
 	(word (literal (nth 0 ws))))
     (add-triple ws-uri !rdf:type !wn30:WordSense)
@@ -55,7 +55,7 @@
 	pvalue)))
 
 
-(defun add-pointer (ss ss-res p &key (ns "wn30i"))
+(defun add-pointer (ss ss-res p &key (ns "wn30en"))
   (let ((snum (nth 3 p))
 	(tnum (nth 4 p))
 	(property (get-property (synset-type ss) p)))
@@ -68,7 +68,7 @@
 	(error "Ops! I don't know this pointer/property."))))
 
 
-(defun add-frame (ss ss-res frame &key (ns "wn30i"))
+(defun add-frame (ss ss-res frame &key (ns "wn30en"))
   (let ((sentence (literal (nth (1- (nth 0 frame)) *frames*)))) 
     (if (= 0 (nth 1 frame))
 	(add-triple ss-res !wn30:frame sentence)
@@ -76,7 +76,7 @@
 	  (add-triple source !wn30:frame sentence)))))
 
 
-(defun add-synset (synset &key (ns "wn30i"))
+(defun add-synset (synset &key (ns "wn30en"))
   (let ((ss-uri (synset-uri synset :ns ns))
 	(lexname (if (synset-lnum synset)
 		     (cadr (assoc (synset-lnum synset) *lexnames*)))))

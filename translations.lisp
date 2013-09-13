@@ -1,3 +1,8 @@
+;; (C) 2013 IBM Corporation
+;;
+;;  Author: Alexandre Rademaker
+;; Project: Wordnet-BR
+
 
 (in-package :wordnet2rdf)
 

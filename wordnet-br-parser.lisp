@@ -1,3 +1,9 @@
+;; (C) 2013 IBM Corporation
+;;
+;;  Author: Alexandre Rademaker
+;; Project: Wordnet-BR
+
+
 ;; Referencias:
 ;; - http://code.google.com/p/cl-en/source/browse/trunk/basics.lisp#148
 ;; - http://www.ibm.com/developerworks/xml/tutorials/x-usax/

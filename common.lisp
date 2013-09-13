@@ -1,3 +1,5 @@
+;; (C) 2013 IBM Corporation
+;; Author: Alexandre Rademaker
 
 (in-package :wordnet2rdf)
 
