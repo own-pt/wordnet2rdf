@@ -19,7 +19,7 @@
 (defun parse-word (word &optional (adj nil))
   (if (not (null adj))
       (multiple-value-bind (m g)
-	  (scan-to-strings "(.*)\\((a|p|ip)\\)" (nth 0 word))
+	  (cl-ppcre:scan-to-strings "(.*)\\((a|p|ip)\\)" (nth 0 word))
 	(if (null m)
 	    (list (nth 0 word) 
 		  (parse-integer (nth 1 word) :radix 16) nil)
@@ -102,7 +102,7 @@
 
 (defun parser-sents (line)
   (multiple-value-bind (s a) 
-      (scan-to-strings "([0-9]+)[ ]+(.*)" line)
+      (cl-ppcre:scan-to-strings "([0-9]+)[ ]+(.*)" line)
     (declare (ignore s)) 
     (list (parse-integer (aref a 0)) 
 	  (aref a 1))))
@@ -110,7 +110,7 @@
 
 (defun parser-core (line)
   (multiple-value-bind (s a) 
-      (scan-to-strings "([0-9]+)-([asrnv])" line)
+      (cl-ppcre:scan-to-strings "([0-9]+)-([asrnv])" line)
     (declare (ignore s)) 
     (list :offset (aref a 0) :type (aref a 1))))
 
@@ -122,7 +122,7 @@
 
 (defun parser-lexnames (line)
   (multiple-value-bind (m g) 
-      (scan-to-strings "([0-9]+)[ \\t]+([a-zA-Z\\.]*)[ \\t]+([0-9]*)" line)
+      (cl-ppcre:scan-to-strings "([0-9]+)[ \\t]+([a-zA-Z\\.]*)[ \\t]+([0-9]*)" line)
     (declare (ignore m)) 
     (list (parse-integer (aref g 0)) 
 	  (aref g 1)

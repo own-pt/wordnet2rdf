@@ -9,12 +9,8 @@
 
 (in-package :wordnet2rdf)
 
-(defparameter *data-files* (list "data.noun" "data.verb" "data.adj" "data.adv"))
 (defparameter *src*              #P"/Users/arademaker/work/IBM/scolapp/")
 (defparameter *wordnet-br-dir*   #P"/Users/arademaker/work/WordNet-BR/uwn-*.xml")
-(defparameter *wordnet-dict-dir* (merge-pathnames #P"wordnet/WordNet-3.0/dict/" *src*))
-(defparameter *core-file*        (merge-pathnames #P"wordnet/core/wn30-core-synsets.tab" *src*))
-(defparameter *sentiwordnet*     (merge-pathnames #P"SentiWordNet/SentiWordNet_3.0.0_20130122.txt" *src*))
 (defparameter *wikidictionary*   (merge-pathnames #P"wordnet/francis/wn-wikt-por.tab" *src*))
 
 (defparameter *sents* (parse-file  (merge-pathnames #P"wordnet/WordNet-3.0/dict/sents.vrb" *src*) 
@@ -26,14 +22,14 @@
   "parsing and loading the lexname file")
 
 
-(defun load-en ()
+(defun load-en (dict-dir core-file)
   (progn 
     (delete-triples )
-    (dolist (f *data-files*)
-      (mapcar #'add-synset (parse-file (merge-pathnames *wordnet-dict-dir* f) #'parse-data-line)))
-    (mapcar #'add-senseidx (parse-file (merge-pathnames *wordnet-dict-dir* #P"index.sense") #'parser-senseidx))
-    (mapcar #'add-sentidx (parse-file (merge-pathnames *wordnet-dict-dir* #P"sentidx.vrb") #'parser-sentidx))
-    (mapcar #'add-core (parse-file *core-file* #'parser-core))))
+    (dolist (f '("data.noun" "data.verb" "data.adj" "data.adv"))
+      (mapcar #'add-synset (parse-file (merge-pathnames dict-dir f) #'parse-data-line)))
+    (mapcar #'add-senseidx (parse-file (merge-pathnames dict-dir #P"index.sense") #'parser-senseidx))
+    (mapcar #'add-sentidx (parse-file (merge-pathnames dict-dir #P"sentidx.vrb") #'parser-sentidx))
+    (mapcar #'add-core (parse-file core-file #'parser-core))))
 
 
 (defun load-br () 
@@ -45,12 +41,5 @@
 		(slot-value my 'synsets))))))
 
 
-(defun load-sentiwordnet ()
-  (mapcar #'add-sentiwordnet (parse-sentiwordnet *sentiwordnet*)))
-
-
-(defun load-all ()
-  (load-en)
-  (load-br)
-  (load-sentiwordnet))
-
+(defun load-sentiwordnet (sentiwordnet-file)
+  (mapcar #'add-sentiwordnet (parse-sentiwordnet sentiwordnet-file)))

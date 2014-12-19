@@ -12,5 +12,5 @@
 (register-namespace "wn30br" "http://arademaker.github.com/wn30-br/instances/" :errorp nil)
 (register-namespace "swn30"  "http://arademaker.github.com/swn30/schema/" :errorp nil)
 (register-namespace "source" "file:///home/ubuntu/wordnet-br/")
-(create-triple-store "wn30")
+
 
