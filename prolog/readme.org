@@ -1,0 +1,29 @@
+
+* Prolog to Lisp
+
+First idea of converting prolog files to lisp files. Not completed!
+The code below could be use to transform the prolog files distributed
+by Princeton to Lisp files:
+
+#+BEGIN_SRC bash
+for f in *.pl; do awk -f prolog-to-lisp.awk $f > $(basename $f .pl).lisp; done
+#+END_SRC
+
+The wn_ant.pl could be transformed in:
+
+#+BEGIN_EXAMPLE
+(ant 100019128 1 100021939 1)
+(ant 100021939 1 100019128 1)
+(ant 100047356 1 100047550 1)
+...
+#+END_EXAMPLE
+
+The file wn_s.pl could be transformed into:
+
+#+BEGIN_EXAMPLE
+(s 100001740 1 "entity" n 1 11)
+(s 100001930 1 "physical entity" n 1 0)
+(s 100002137 1 "abstraction" n 6 0)
+(s 100002137 2 "abstract entity" n 1 0)
+...
+#+END_EXAMPLE
