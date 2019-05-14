@@ -7,7 +7,7 @@
 
 
 (defun collect (data start size total)
-  "Auxiliar function for collect subsequences of a sequence."
+  "Auxiliar function for collecting subsequences of a sequence."
   (do ((pos start (+ pos size))
        (res nil)
        (count 1 (+ 1 count)))
@@ -109,9 +109,8 @@
 
 
 (defun parser-core (line)
-  (multiple-value-bind (s a) 
+  (multiple-value-bind (* a) 
       (cl-ppcre:scan-to-strings "([0-9]+)-([asrnv])" line)
-    (declare (ignore s)) 
     (list :offset (aref a 0) :type (aref a 1))))
 
 

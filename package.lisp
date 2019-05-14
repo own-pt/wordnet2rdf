@@ -2,5 +2,6 @@
 ;; Author: Alexandre Rademaker
 
 (defpackage #:wordnet2rdf
-  (:use #:cl #:excl #:net.uri #:net.aserve #:db.agraph))
+  (:use #:cl ;; #:excl #:net.uri #:net.aserve #:db.agraph
+	))
 

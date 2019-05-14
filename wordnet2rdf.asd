@@ -8,15 +8,21 @@
 
 (asdf:defsystem #:wordnet2rdf
   :serial t
-  :depends-on (#:agclient #:cl-ppcre #:cxml)
+  :depends-on (#:cl-ppcre #:wilbur #:cxml)
   :components ((:file "package")
-	       (:file "ag-init" :depends-on ("package"))
+               (:file "config")
+	       ;; deprecated
+	       ;; (:file "ag-init" :depends-on ("package"))
 	       (:file "common"  :depends-on ("package"))
 	       (:file "wordnet-db-parser" :depends-on ("common"))
-	       (:file "wordnet-br-parser" :depends-on ("common"))
-	       (:file "ag-loader"         :depends-on ("common"))
-	       (:file "sentiwordnet"      :depends-on ("ag-loader"))
-	       (:file "wikidictionary"    :depends-on ("ag-loader"))
-	       (:file "process"           :depends-on ("wikidictionary"))
-	       (:file "deduplication"     :depends-on ("ag-loader"))))
-
+	       ;; (:file "wordnet-br-parser" :depends-on ("common"))
+	       (:file "loader"         :depends-on ("common"))
+	       ;; (:file "ag-loader"         :depends-on ("common"))
+	       ;; deprecated
+	       ;; (:file "sentiwordnet"      :depends-on ("ag-loader"))
+	       ;; deprecated
+	       ;; (:file "wikidictionary"    :depends-on ("ag-loader"))
+	       (:file "process"           :depends-on (;; "wikidictionary"
+						       "config"))
+	       ;; (:file "deduplication"     :depends-on ("ag-loader"))
+	       ))

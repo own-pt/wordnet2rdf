@@ -6,7 +6,7 @@
 
 ;; Referencias:
 ;; - http://code.google.com/p/cl-en/source/browse/trunk/basics.lisp#148
-;; - http://www.ibm.com/developerworks/xml/tutorials/x-usax/
+;; - https://www6.software.ibm.com/developerworks/education/x-usax/x-usax-a4.pdf
 ;; - http://common-lisp.net/project/cxml/
 ;; - http://common-lisp.net/project/cxml/saxoverview/index.html
 
