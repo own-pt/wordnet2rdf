@@ -9,8 +9,6 @@
 
 (in-package :wordnet2rdf)
 
-(setf w:*db* (make-instance 'w:db))
-
 (w:add-namespace "wn30en" "https://w3id.org/own-pt/wn30-en/instances/")
 (w:add-namespace "wn30br"  "https://w3id.org/own-pt/wn30/schema/")
 
@@ -134,5 +132,3 @@
   (let ((ss-uri (make-synset-uri (getf core :offset) 
 				 (getf core :type))))
     (add-triple ss-uri !rdf:type !wn30:CoreConcept)))
-
-
