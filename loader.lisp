@@ -10,7 +10,7 @@
 (in-package :wordnet2rdf)
 
 (w:add-namespace "wn30en" "https://w3id.org/own-pt/wn30-en/instances/")
-(w:add-namespace "wn30br"  "https://w3id.org/own-pt/wn30/schema/")
+(w:add-namespace "wn30"  "https://w3id.org/own-pt/wn30/schema/")
 
 (defun make-synset-uri (ss-id ss-type &key (ns "wn30en"))
   (if (equal ss-type "s")
@@ -26,7 +26,7 @@
 ;; (declaim (inline resource add-triple))
 
 (defun resource (path ns)
-  (make-instance 'w:node :uri (format nil "~a~a" ns path)))
+  (make-instance 'w:node :uri (format nil "~a:~a" ns path) :name-resolved-p nil))
 
 (defun add-triple (subj pred obj)
   (w:add-triple (w:triple subj pred obj)))
