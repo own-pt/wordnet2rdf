@@ -65,7 +65,7 @@
 			     ("!"  !wn30:antonymOf)
 			     ("^"  !wn30:seeAlso)
 			     ("<"  !wn30:participleOf)
-			     ("\\" ((("an" "aa" "as" "sn" "sa" "ss") !wn30:adjectivePertainsTo) 
+			     ("\\" ((("an" "aa" "as" "sn" "sa" "ss" "ns" "na" "a") !wn30:adjectivePertainsTo) 
 				    (("ra" "rs") !wn30:adverbPertainsTo)))))
 
 
